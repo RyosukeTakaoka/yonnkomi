@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7752387B2E6D5B9F00CFA3A4 /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7752387A2E6D5B9F00CFA3A4 /* CreateView.swift */; };
+		7752387D2E6D5BCD00CFA3A4 /* PKDrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7752387C2E6D5BCD00CFA3A4 /* PKDrawingView.swift */; };
+		7752387F2E6D5BE200CFA3A4 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7752387E2E6D5BE200CFA3A4 /* UserView.swift */; };
+		775238832E6D5C3300CFA3A4 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 775238822E6D5C3300CFA3A4 /* PostView.swift */; };
+		775238862E6D5C9B00CFA3A4 /* Cloudinary in Frameworks */ = {isa = PBXBuildFile; productRef = 775238852E6D5C9B00CFA3A4 /* Cloudinary */; };
+		775238892E6D5CC600CFA3A4 /* PKHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 775238882E6D5CC600CFA3A4 /* PKHUD */; };
 		77DF43602E2C93AB00E6AF1B /* yonnkomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DF435F2E2C93AB00E6AF1B /* yonnkomiApp.swift */; };
 		77DF43642E2C93AB00E6AF1B /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DF43632E2C93AB00E6AF1B /* Item.swift */; };
 		77DF43662E2C93AD00E6AF1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77DF43652E2C93AD00E6AF1B /* Assets.xcassets */; };
@@ -24,10 +30,14 @@
 		77EEA5542E2CBF9B001AC06A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EEA5532E2CBF9B001AC06A /* Date.swift */; };
 		77EEA5562E2CBFE0001AC06A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EEA5552E2CBFE0001AC06A /* String.swift */; };
 		77EEA5592E2CC0EE001AC06A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 77EEA5582E2CC0EE001AC06A /* GoogleService-Info.plist */; };
-		77EEA55B2E2CCBF6001AC06A /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EEA55A2E2CCBF6001AC06A /* TabView.swift */; };
+		77EEA55B2E2CCBF6001AC06A /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EEA55A2E2CCBF6001AC06A /* CustomTabView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7752387A2E6D5B9F00CFA3A4 /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		7752387C2E6D5BCD00CFA3A4 /* PKDrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingView.swift; sourceTree = "<group>"; };
+		7752387E2E6D5BE200CFA3A4 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
+		775238822E6D5C3300CFA3A4 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		77DF435C2E2C93AB00E6AF1B /* yonnkomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yonnkomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77DF435F2E2C93AB00E6AF1B /* yonnkomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = yonnkomiApp.swift; sourceTree = "<group>"; };
 		77DF43632E2C93AB00E6AF1B /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -42,7 +52,7 @@
 		77EEA5532E2CBF9B001AC06A /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		77EEA5552E2CBFE0001AC06A /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		77EEA5582E2CC0EE001AC06A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		77EEA55A2E2CCBF6001AC06A /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
+		77EEA55A2E2CCBF6001AC06A /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +62,8 @@
 			files = (
 				77EEA5482E2CB591001AC06A /* FirebaseDatabase in Frameworks */,
 				77EEA54A2E2CB591001AC06A /* FirebaseFirestore in Frameworks */,
+				775238862E6D5C9B00CFA3A4 /* Cloudinary in Frameworks */,
+				775238892E6D5CC600CFA3A4 /* PKHUD in Frameworks */,
 				77EEA5462E2CB591001AC06A /* FirebaseCore in Frameworks */,
 				77EEA5442E2CB591001AC06A /* FirebaseAuth in Frameworks */,
 			);
@@ -111,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				77EEA5532E2CBF9B001AC06A /* Date.swift */,
+				7752387C2E6D5BCD00CFA3A4 /* PKDrawingView.swift */,
 				77EEA5552E2CBFE0001AC06A /* String.swift */,
 			);
 			path = Extention;
@@ -119,12 +132,15 @@
 		77EEA5572E2CC022001AC06A /* View */ = {
 			isa = PBXGroup;
 			children = (
-				77EEA55A2E2CCBF6001AC06A /* TabView.swift */,
+				77EEA55A2E2CCBF6001AC06A /* CustomTabView.swift */,
 				77DF43732E2C979700E6AF1B /* HomeView.swift */,
 				77DF43712E2C95CC00E6AF1B /* RegisterView.swift */,
+				7752387A2E6D5B9F00CFA3A4 /* CreateView.swift */,
+				7752387E2E6D5BE200CFA3A4 /* UserView.swift */,
 				77EEA5502E2CBEB5001AC06A /* PostItemView.swift */,
 				77EEA54B2E2CB671001AC06A /* RootView.swift */,
 				77DF436F2E2C93FF00E6AF1B /* LoginView.swift */,
+				775238822E6D5C3300CFA3A4 /* PostView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -175,6 +191,8 @@
 			mainGroup = 77DF43532E2C93AB00E6AF1B;
 			packageReferences = (
 				77EEA5422E2CB591001AC06A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				775238842E6D5C9B00CFA3A4 /* XCRemoteSwiftPackageReference "cloudinary_ios" */,
+				775238872E6D5CC600CFA3A4 /* XCRemoteSwiftPackageReference "PKHUD" */,
 			);
 			productRefGroup = 77DF435D2E2C93AB00E6AF1B /* Products */;
 			projectDirPath = "";
@@ -203,7 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77EEA55B2E2CCBF6001AC06A /* TabView.swift in Sources */,
+				77EEA55B2E2CCBF6001AC06A /* CustomTabView.swift in Sources */,
 				77DF43642E2C93AB00E6AF1B /* Item.swift in Sources */,
 				77DF43722E2C95CC00E6AF1B /* RegisterView.swift in Sources */,
 				77EEA5562E2CBFE0001AC06A /* String.swift in Sources */,
@@ -211,9 +229,13 @@
 				77DF43702E2C93FF00E6AF1B /* LoginView.swift in Sources */,
 				77DF43742E2C979700E6AF1B /* HomeView.swift in Sources */,
 				77EEA5512E2CBEB5001AC06A /* PostItemView.swift in Sources */,
+				7752387D2E6D5BCD00CFA3A4 /* PKDrawingView.swift in Sources */,
 				77EEA54F2E2CBACC001AC06A /* Post.swift in Sources */,
 				77EEA5542E2CBF9B001AC06A /* Date.swift in Sources */,
+				7752387B2E6D5B9F00CFA3A4 /* CreateView.swift in Sources */,
 				77DF43602E2C93AB00E6AF1B /* yonnkomiApp.swift in Sources */,
+				775238832E6D5C3300CFA3A4 /* PostView.swift in Sources */,
+				7752387F2E6D5BE200CFA3A4 /* UserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +443,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		775238842E6D5C9B00CFA3A4 /* XCRemoteSwiftPackageReference "cloudinary_ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cloudinary/cloudinary_ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.3;
+			};
+		};
+		775238872E6D5CC600CFA3A4 /* XCRemoteSwiftPackageReference "PKHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pkluz/PKHUD.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.4.0;
+			};
+		};
 		77EEA5422E2CB591001AC06A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -432,6 +470,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		775238852E6D5C9B00CFA3A4 /* Cloudinary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 775238842E6D5C9B00CFA3A4 /* XCRemoteSwiftPackageReference "cloudinary_ios" */;
+			productName = Cloudinary;
+		};
+		775238882E6D5CC600CFA3A4 /* PKHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 775238872E6D5CC600CFA3A4 /* XCRemoteSwiftPackageReference "PKHUD" */;
+			productName = PKHUD;
+		};
 		77EEA5432E2CB591001AC06A /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 77EEA5422E2CB591001AC06A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

@@ -6,7 +6,7 @@ struct RootView: View {
     var body: some View {
         NavigationStack {
             if isLoggedIn {
-                HomeView()
+                CustomTabView()
             } else {
                 LoginView(isLoggedIn: $isLoggedIn)
             }
