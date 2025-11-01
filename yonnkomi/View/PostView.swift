@@ -16,6 +16,7 @@ struct PostView: View {
 
     @State private var pickerItem: PhotosPickerItem?
     @Environment(\.dismiss) private var dismiss
+    @Binding var shouldResetCanvas: Bool
 
     let cloudinary = CLDCloudinary(configuration: CLDConfiguration(cloudName: "dw71feikq", secure: true))
     let db = Firestore.firestore()
@@ -25,8 +26,9 @@ struct PostView: View {
         GridItem(.flexible())
     ]
 
-    init(canvasImages: [UIImage] = []) {
+    init(canvasImages: [UIImage] = [], shouldResetCanvas: Binding<Bool>) {
         self._canvasImages = State(initialValue: canvasImages)
+        self._shouldResetCanvas = shouldResetCanvas
     }
 
     var body: some View {
@@ -256,6 +258,9 @@ struct PostView: View {
             try await db.collection("posts").document(uuid).setData(postData)
             alertMessage = "投稿できました！"
             showAlert = true
+
+            // 投稿成功フラグを設定
+            shouldResetCanvas = true
 
             // 画面を閉じる
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {

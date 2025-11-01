@@ -55,6 +55,7 @@ struct CreateView: View {
     @State private var isEditingMode = false
     @State private var capturedImages: [UIImage] = []
     @State private var canvasSize: CGSize = .zero
+    @State private var shouldResetCanvas = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -83,7 +84,10 @@ struct CreateView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button(isEditingMode ? "完了" : "編集") { isEditingMode.toggle() }
                 NavigationLink {
-                    PostView(canvasImages: drawings.map { $0.toImage(canvasSize: canvasSize) })
+                    PostView(
+                        canvasImages: drawings.map { $0.toImage(canvasSize: canvasSize) },
+                        shouldResetCanvas: $shouldResetCanvas
+                    )
                 } label: {
                     Text("投稿")
                 }
@@ -91,6 +95,15 @@ struct CreateView: View {
         }
         .navigationTitle("\(pageIndex + 1)/4")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: shouldResetCanvas) { newValue in
+            if newValue {
+                // キャンバスをリセット
+                drawings = Array(repeating: PKDrawing(), count: 4)
+                pageIndex = 0
+                isEditingMode = false
+                shouldResetCanvas = false
+            }
+        }
     }
 }
 
