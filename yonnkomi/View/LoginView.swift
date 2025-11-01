@@ -12,76 +12,74 @@ struct LoginView: View {
     @State private var alertMessage: String = ""
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .center) {
-                Text("SwiftUI App")
-                    .font(.system(size: 48, weight: .heavy))
-                
-                VStack(spacing: 24) {
-                    // ここにcontentTypeを追加
-                    TextField("Mail address", text: $inputEmail)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(maxWidth: 280)
-                        .keyboardType(.emailAddress)
-                        .textContentType(.emailAddress)  // ★ここを追加
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-                    
-                    SecureField("Password", text: $inputPassword)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(maxWidth: 280)
+        VStack(alignment: .center) {
+            Text("SwiftUI App")
+                .font(.system(size: 48, weight: .heavy))
+
+            VStack(spacing: 24) {
+                // ここにcontentTypeを追加
+                TextField("Mail address", text: $inputEmail)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(maxWidth: 280)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)  // ★ここを追加
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+
+                SecureField("Password", text: $inputPassword)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(maxWidth: 280)
+            }
+            .frame(height: 200)
+
+            Button(action: {
+                if !isValidEmail(inputEmail) {
+                    alertMessage = "メールアドレスの形式が正しくありません"
+                    showAlert = true
+                    return
                 }
-                .frame(height: 200)
-                
-                Button(action: {
-                    if !isValidEmail(inputEmail) {
-                        alertMessage = "メールアドレスの形式が正しくありません"
+                Login(email: inputEmail, password: inputPassword) { success in
+                    if success {
+                        print("ログイン成功")
+                        isLoggedIn = true
+                    } else {
+                        print("ログイン失敗")
+                        alertMessage = "ログインに失敗しました"
                         showAlert = true
-                        return
                     }
-                    Login(email: inputEmail, password: inputPassword) { success in
-                        if success {
-                            print("ログイン成功")
-                            isLoggedIn = true
-                        } else {
-                            print("ログイン失敗")
-                            alertMessage = "ログインに失敗しました"
-                            showAlert = true
-                        }
-                    }
-                }) {
-                    Text("Login")
-                        .fontWeight(.medium)
-                        .frame(minWidth: 160)
-                        .foregroundColor(.white)
-                        .padding(12)
-                        .background(Color.accentColor)
-                        .cornerRadius(8)
                 }
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text("エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                }
-                
-                Button(action: {
-                    isPresented = true
-                }) {
-                    Text("新規登録")
-                        .fontWeight(.medium)
-                        .frame(minWidth: 160)
-                        .foregroundColor(.white)
-                        .padding(12)
-                        .background(Color.accentColor)
-                        .cornerRadius(8)
-                }
-                .fullScreenCover(isPresented: $isPresented) {
-                    RegisterView(isLoggedIn: $isLoggedIn)
-                }
+            }) {
+                Text("Login")
+                    .fontWeight(.medium)
+                    .frame(minWidth: 160)
+                    .foregroundColor(.white)
+                    .padding(12)
+                    .background(Color.accentColor)
+                    .cornerRadius(8)
             }
-            .contentShape(Rectangle()) // タップ可能な領域を拡張
-            .onTapGesture {
-                // キーボードを閉じる
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
+
+            Button(action: {
+                isPresented = true
+            }) {
+                Text("新規登録")
+                    .fontWeight(.medium)
+                    .frame(minWidth: 160)
+                    .foregroundColor(.white)
+                    .padding(12)
+                    .background(Color.accentColor)
+                    .cornerRadius(8)
+            }
+            .fullScreenCover(isPresented: $isPresented) {
+                RegisterView(isLoggedIn: $isLoggedIn)
+            }
+        }
+        .contentShape(Rectangle()) // タップ可能な領域を拡張
+        .onTapGesture {
+            // キーボードを閉じる
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
     }
     // メールアドレスバリデーション関数

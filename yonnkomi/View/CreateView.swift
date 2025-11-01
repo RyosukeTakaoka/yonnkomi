@@ -82,14 +82,15 @@ struct CreateView: View {
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button(isEditingMode ? "完了" : "編集") { isEditingMode.toggle() }
-                Button("投稿") {
-                    guard canvasSize.width > 0, canvasSize.height > 0 else { return }
-                    capturedImages = drawings.map { $0.toImage(canvasSize: canvasSize) }
+                NavigationLink {
+                    PostView(canvasImages: drawings.map { $0.toImage(canvasSize: canvasSize) })
+                } label: {
+                    Text("投稿")
                 }
             }
         }
         .navigationTitle("\(pageIndex + 1)/4")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

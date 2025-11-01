@@ -6,84 +6,175 @@ import Cloudinary
 import PKHUD
 
 struct PostView: View {
-    
+
     @State private var title: String = ""
     @State private var thumbnail: UIImage?
-    @State private var canvasImages: [UIImage] = []
+    @State private var canvasImages: [UIImage]
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isPosting = false
-    
+
     @State private var pickerItem: PhotosPickerItem?
-    
+    @Environment(\.dismiss) private var dismiss
+
     let cloudinary = CLDCloudinary(configuration: CLDConfiguration(cloudName: "dw71feikq", secure: true))
     let db = Firestore.firestore()
-    
+
     // Grid layout
     let columns = [
         GridItem(.flexible())
     ]
-    
+
+    init(canvasImages: [UIImage] = []) {
+        self._canvasImages = State(initialValue: canvasImages)
+    }
+
     var body: some View {
-        NavigationStack {
+        ZStack(alignment: .bottom) {
             ScrollView {
-                VStack(spacing: 16) {
-                    TextField("タイトルを入力", text: $title)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                    
-                    if let thumbnail {
-                        Image(uiImage: thumbnail)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 200)
-                            .cornerRadius(8)
-                    } else {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(height: 200)
-                            .cornerRadius(8)
-                    }
-                    
-                    PhotosPicker(selection: $pickerItem, matching: .images, photoLibrary: .shared()) {
-                        Text("サムネイル画像を選択")
-                            .foregroundColor(.white)
+                VStack(spacing: 20) {
+                    // タイトル入力セクション
+                    VStack(alignment: .leading, spacing: 12) {
+                        Label("タイトル", systemImage: "text.alignleft")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+
+                        TextField("作品のタイトルを入力", text: $title)
+                            .textFieldStyle(.plain)
                             .padding()
-                            .background(Color.blue)
-                            .cornerRadius(8)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(12)
                     }
-                    
-                    LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach(canvasImages.indices, id: \.self) { index in
-                            Image(uiImage: canvasImages[index])
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 200)
-                                .cornerRadius(8)
+                    .padding(.horizontal)
+
+                    // サムネイル選択セクション
+                    VStack(alignment: .leading, spacing: 12) {
+                        Label("サムネイル", systemImage: "photo.on.rectangle")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+
+                        ZStack {
+                            if let thumbnail {
+                                Image(uiImage: thumbnail)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 220)
+                                    .frame(maxWidth: .infinity)
+                                    .clipped()
+                                    .cornerRadius(16)
+                            } else {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color(.systemGray5))
+                                    .frame(height: 220)
+                                    .overlay {
+                                        VStack(spacing: 12) {
+                                            Image(systemName: "photo.badge.plus")
+                                                .font(.system(size: 48))
+                                                .foregroundColor(.secondary)
+                                            Text("サムネイル画像を選択")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                            }
+                        }
+                        .overlay(alignment: .bottomTrailing) {
+                            PhotosPicker(selection: $pickerItem, matching: .images, photoLibrary: .shared()) {
+                                Label("選択", systemImage: "photo")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 10)
+                                    .background(Color.blue)
+                                    .cornerRadius(20)
+                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                            }
+                            .padding(12)
                         }
                     }
                     .padding(.horizontal)
-                    
-                    Button(action: postButtonTapped) {
-                        if isPosting {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .padding()
-                        } else {
-                            Text("投稿する")
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.green)
-                                .cornerRadius(8)
+
+                    // キャンバス画像プレビューセクション
+                    if !canvasImages.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("4コマ漫画 (\(canvasImages.count)ページ)", systemImage: "rectangle.stack")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                                .padding(.horizontal)
+
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(canvasImages.indices, id: \.self) { index in
+                                        VStack(spacing: 8) {
+                                            Image(uiImage: canvasImages[index])
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 280, height: 280)
+                                                .background(Color.white)
+                                                .cornerRadius(12)
+                                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+
+                                            Text("\(index + 1) / \(canvasImages.count)")
+                                                .font(.caption)
+                                                .fontWeight(.medium)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
                         }
                     }
+
+                    // 投稿ボタン用のスペース
+                    Spacer()
+                        .frame(height: 80)
                 }
-                .padding()
+                .padding(.top)
             }
-            .navigationTitle("新規投稿")
-            .alert(alertMessage, isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
+
+            // 固定された投稿ボタン
+            VStack(spacing: 0) {
+                Divider()
+
+                Button(action: postButtonTapped) {
+                    HStack(spacing: 12) {
+                        if isPosting {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            Text("投稿中...")
+                                .fontWeight(.semibold)
+                        } else {
+                            Image(systemName: "paperplane.fill")
+                                .font(.system(size: 18))
+                            Text("投稿する")
+                                .fontWeight(.semibold)
+                        }
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(14)
+                    .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
+                }
+                .disabled(isPosting)
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+                .background(Color(.systemBackground).opacity(0.95))
             }
+        }
+        .navigationTitle("新規投稿")
+        .navigationBarTitleDisplayMode(.large)
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
         }
         .onChange(of: pickerItem) { newItem in
             guard let newItem else { return }
@@ -163,13 +254,15 @@ struct PostView: View {
         
         do {
             try await db.collection("posts").document(uuid).setData(postData)
-//            alertMessage = "投稿できました！"
-//            showAlert = true
-//            title = ""
-//            thumbnail = nil
-            canvasImages.removeAll()
+            alertMessage = "投稿できました！"
+            showAlert = true
+
+            // 画面を閉じる
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                dismiss()
+            }
         } catch {
-//            alertMessage = "投稿に失敗しました。再試行してください。"
+            alertMessage = "投稿に失敗しました。再試行してください。"
             showAlert = true
         }
     }
