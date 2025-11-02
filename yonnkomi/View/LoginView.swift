@@ -91,6 +91,11 @@ struct LoginView: View {
                 authenticateWithBiometrics()
             }
         }
+        .contentShape(Rectangle()) // タップ可能な領域を拡張
+        .onTapGesture {
+            // キーボードを閉じる
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
     
     
