@@ -95,15 +95,6 @@ struct CreateView: View {
         }
         .navigationTitle("\(pageIndex + 1)/4")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: shouldResetCanvas) { newValue in
-            if newValue {
-                // キャンバスをリセット
-                drawings = Array(repeating: PKDrawing(), count: 4)
-                pageIndex = 0
-                isEditingMode = false
-                shouldResetCanvas = false
-            }
-        }
     }
 }
 
