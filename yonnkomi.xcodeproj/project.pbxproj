@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -36,26 +36,28 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7752387A2E6D5B9F00CFA3A4 /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
-		7752387C2E6D5BCD00CFA3A4 /* PKDrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingView.swift; sourceTree = "<group>"; };
-		7752387E2E6D5BE200CFA3A4 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
-		775238822E6D5C3300CFA3A4 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
-		77AEEBF32E7F995E0011A85C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		77DF435C2E2C93AB00E6AF1B /* yonnkomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yonnkomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		77DF435F2E2C93AB00E6AF1B /* yonnkomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = yonnkomiApp.swift; sourceTree = "<group>"; };
-		77DF43632E2C93AB00E6AF1B /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
-		77DF43652E2C93AD00E6AF1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		77DF43682E2C93AD00E6AF1B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		77DF436F2E2C93FF00E6AF1B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		77DF43712E2C95CC00E6AF1B /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
-		77DF43732E2C979700E6AF1B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		77EEA54B2E2CB671001AC06A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		77EEA54E2E2CBACC001AC06A /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		77EEA5502E2CBEB5001AC06A /* PostItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostItemView.swift; sourceTree = "<group>"; };
-		77EEA5532E2CBF9B001AC06A /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
-		77EEA5552E2CBFE0001AC06A /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		77EEA5582E2CC0EE001AC06A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		77EEA55A2E2CCBF6001AC06A /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
+		000DC889166EBE73097E88DA /* PsetView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PsetView.xib; sourceTree = "<group>"; };
+		0578D548537DCDCA12FF7A61 /* PKDrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingView.swift; sourceTree = "<group>"; };
+		0790EFD66184D2024BD42BA8 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		1125ABDFBF172E75CB218159 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		2C92B73615ED874EBB3C7BCA /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
+		3140B9D220B9E5FC6F0E2CE6 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		3B04616DBF88533821F66C31 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		4A3E6D2D642483364A23F963 /* yonnkomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yonnkomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AB29FEA80B970B1D79540C9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		4BFA51694FD9A9D8FD035F32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5307D280FFFBC1BD2778E6EE /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		5EE82626E15A23659954FDED /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		6910C59155CFAA6FFE9C95D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7614A12EA718A8267214FF71 /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		8B0267C3CDE1D5EDEE8F8EC6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		95CA5224875CC59211D59008 /* yonnkomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = yonnkomiApp.swift; sourceTree = "<group>"; };
+		C68336CBF0497AF0B2619B06 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		D459D238F7626BC6678A3527 /* PostItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostItemView.swift; sourceTree = "<group>"; };
+		E2AD80F43291CE9C1E499527 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EF89C8A357054704E033D82E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F4B6E0BBCC6E12C2CEEA5ABE /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		F8593685F8C9DC9BD15BA6DD /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,14 +105,9 @@
 		8777320FB115533BE2A3DA29 /* Extention */ = {
 			isa = PBXGroup;
 			children = (
-				77AEEBF32E7F995E0011A85C /* Info.plist */,
-				77DF435F2E2C93AB00E6AF1B /* yonnkomiApp.swift */,
-				77EEA5572E2CC022001AC06A /* View */,
-				77EEA54D2E2CBA66001AC06A /* Model */,
-				77EEA5522E2CBF52001AC06A /* Extention */,
-				77DF43652E2C93AD00E6AF1B /* Assets.xcassets */,
-				77EEA5582E2CC0EE001AC06A /* GoogleService-Info.plist */,
-				77DF43672E2C93AD00E6AF1B /* Preview Content */,
+				5EE82626E15A23659954FDED /* Date.swift */,
+				0578D548537DCDCA12FF7A61 /* PKDrawingView.swift */,
+				5307D280FFFBC1BD2778E6EE /* String.swift */,
 			);
 			path = Extention;
 			sourceTree = "<group>";
@@ -146,6 +143,7 @@
 				6910C59155CFAA6FFE9C95D3 /* Assets.xcassets */,
 				EF89C8A357054704E033D82E /* ContentView.swift */,
 				E2AD80F43291CE9C1E499527 /* GoogleService-Info.plist */,
+				4BFA51694FD9A9D8FD035F32 /* Info.plist */,
 				95CA5224875CC59211D59008 /* yonnkomiApp.swift */,
 				8777320FB115533BE2A3DA29 /* Extention */,
 				911D147BF4C35A6151DCF636 /* Model */,
@@ -193,7 +191,6 @@
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					95D42850D6CF78A4A605A7B6 = {
-						DevelopmentTeam = 5B2NQ74986;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -213,7 +210,6 @@
 				BFC85B2364F7F669F01C08F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				32EBB3780786FCE5A0F0E57A /* XCRemoteSwiftPackageReference "PKHUD" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -335,13 +331,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"yonnkomi/Preview Content\"";
-				DEVELOPMENT_TEAM = 5B2NQ74986;
+				DEVELOPMENT_TEAM = 3P2VBG45Y8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = yonnkomi/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "4コミ";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -352,7 +345,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi;
+				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi.2025;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -368,13 +361,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"yonnkomi/Preview Content\"";
-				DEVELOPMENT_TEAM = 5B2NQ74986;
+				DEVELOPMENT_TEAM = 3P2VBG45Y8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = yonnkomi/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "4コミ";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -385,7 +375,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi;
+				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi.2025;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

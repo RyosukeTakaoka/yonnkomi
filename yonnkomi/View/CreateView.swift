@@ -97,10 +97,3 @@ struct CreateView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-// MARK: - Preview
-struct CustomTabView_Previews: PreviewProvider {
-    static var previews: some View {
-        CustomTabView()
-    }
-}

@@ -12,6 +12,8 @@ struct SavedItem {
 }
 
 struct UserView: View {
+    @Binding var isLoggedIn: Bool
+
     @State private var savedItems: [SavedItem] = [
         SavedItem(title: "地縛少年花子くん", episode: "第1話", savedDate: Date().addingTimeInterval(-86400), thumbnailName: "hanako1", isRead: false, progress: 0.3),
         SavedItem(title: "地縛少年花子くん", episode: "第2話", savedDate: Date().addingTimeInterval(-172800), thumbnailName: "hanako2", isRead: true, progress: 1.0),
@@ -19,12 +21,12 @@ struct UserView: View {
         SavedItem(title: "地縛少年花子くん", episode: "第4話", savedDate: Date().addingTimeInterval(-345600), thumbnailName: "hanako4", isRead: false, progress: 0.7),
         SavedItem(title: "地縛少年花子くん", episode: "第5話", savedDate: Date().addingTimeInterval(-432000), thumbnailName: "hanako5", isRead: true, progress: 1.0)
     ]
-    
+
     @State private var searchText = ""
     @State private var sortOption: SortOption = .dateDescending
     @State private var showingFilterSheet = false
-    // 表示フラグ
-    @State private var isShowingView: Bool = false
+    @State private var showLogoutAlert = false
+    @State private var logoutErrorMessage = ""
     
     enum SortOption: String, CaseIterable {
         case dateDescending = "保存日時（新しい順）"
@@ -67,6 +69,11 @@ struct UserView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .alert("ログアウトエラー", isPresented: $showLogoutAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(logoutErrorMessage)
+            }
         }
     }
     
@@ -89,16 +96,10 @@ struct UserView: View {
                 }
                 
                 Spacer()
-                
-                // Settings button
+
+                // Logout button
                 Button(action: {
-                    do {
-                        try Auth.auth().signOut()
-                        isShowingView = true
-                    } catch let error {
-                        print("ログアウトに失敗しました: \(error.localizedDescription)")
-                        // 必要に応じてアラートを表示してもOK
-                    }
+                    handleLogout()
                 }) {
                     Image(systemName: "rectangle.portrait.and.arrow.forward")
                         .font(.title2)
@@ -244,6 +245,20 @@ struct UserView: View {
             )
         }
     }
+
+    private func handleLogout() {
+        do {
+            try Auth.auth().signOut()
+            // 生体認証の設定をクリア
+            UserDefaults.standard.set(false, forKey: "biometricEnabled")
+            UserDefaults.standard.set("", forKey: "lastEmail")
+            // ログイン画面に戻る
+            isLoggedIn = false
+        } catch let error {
+            logoutErrorMessage = error.localizedDescription
+            showLogoutAlert = true
+        }
+    }
 }
 
 struct SavedItemRow: View {
@@ -333,6 +348,6 @@ struct StatView: View {
 
 struct UserView_Previews: PreviewProvider {
     static var previews: some View {
-        UserView()
+        UserView(isLoggedIn: .constant(true))
     }
 }
