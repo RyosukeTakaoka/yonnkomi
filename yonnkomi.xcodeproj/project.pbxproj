@@ -38,6 +38,7 @@
 		7752387C2E6D5BCD00CFA3A4 /* PKDrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingView.swift; sourceTree = "<group>"; };
 		7752387E2E6D5BE200CFA3A4 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 		775238822E6D5C3300CFA3A4 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		77AEEBF32E7F995E0011A85C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		77DF435C2E2C93AB00E6AF1B /* yonnkomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yonnkomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77DF435F2E2C93AB00E6AF1B /* yonnkomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = yonnkomiApp.swift; sourceTree = "<group>"; };
 		77DF43632E2C93AB00E6AF1B /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -91,6 +92,7 @@
 		77DF435E2E2C93AB00E6AF1B /* yonnkomi */ = {
 			isa = PBXGroup;
 			children = (
+				77AEEBF32E7F995E0011A85C /* Info.plist */,
 				77DF435F2E2C93AB00E6AF1B /* yonnkomiApp.swift */,
 				77EEA5572E2CC022001AC06A /* View */,
 				77EEA54D2E2CBA66001AC06A /* Model */,
@@ -372,6 +374,10 @@
 				DEVELOPMENT_TEAM = 5B2NQ74986;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = yonnkomi/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "4コミ";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -401,6 +407,10 @@
 				DEVELOPMENT_TEAM = 5B2NQ74986;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = yonnkomi/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "4コミ";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

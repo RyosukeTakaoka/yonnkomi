@@ -89,7 +89,7 @@ struct CreateView: View {
             }
         }
         .navigationTitle("\(pageIndex + 1)/4")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
