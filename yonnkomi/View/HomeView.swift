@@ -4,45 +4,48 @@ import Firebase
 struct HomeView: View {
     @State private var posts: [Post] = []
     @State private var isLoading: Bool = false
+    @State private var selectedPost: Post?
     let db = Firestore.firestore()
     let spacer: CGFloat = 8
 
-    var onPostSelected: ((Post) -> Void)?
-
     var body: some View {
-        ScrollView {
-            if isLoading {
-                ProgressView("Loading...")
-                    .padding()
-            }
-
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: spacer) {
-                ForEach(posts) { post in
-                    PostItemView(
-                        post: post,
-                        spacer: spacer,
-                        onLikeTapped: {
-                            if let index = posts.firstIndex(where: { $0.id == post.id }) {
-                                withAnimation(.spring()) {
-                                    posts[index].isLiked.toggle()
-                                }
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                            }
-                        },
-                        onTap: {
-                            onPostSelected?(post)
-                        }
-                    )
+        NavigationStack {
+            ScrollView {
+                if isLoading {
+                    ProgressView("Loading...")
+                        .padding()
                 }
-            }
 
-            .padding(.horizontal, spacer * 2)
-        }
-        .onAppear {
-            fetchPosts()
-        }
-        .refreshable {
-            fetchPosts()
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: spacer) {
+                    ForEach(posts) { post in
+                        PostItemView(
+                            post: post,
+                            spacer: spacer,
+                            onLikeTapped: {
+                                if let index = posts.firstIndex(where: { $0.id == post.id }) {
+                                    withAnimation(.spring()) {
+                                        posts[index].isLiked.toggle()
+                                    }
+                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                }
+                            },
+                            onTap: {
+                                selectedPost = post
+                            }
+                        )
+                    }
+                }
+                .padding(.horizontal, spacer * 2)
+            }
+            .onAppear {
+                fetchPosts()
+            }
+            .refreshable {
+                fetchPosts()
+            }
+            .navigationDestination(item: $selectedPost) { post in
+                MangaDetailView(post: post)
+            }
         }
     }
 

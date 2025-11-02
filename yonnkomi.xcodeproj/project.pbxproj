@@ -26,6 +26,7 @@
 		9E26321F1B3ED2BB2B4E8C6B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FAE0D88717371041A88B919E /* FirebaseAuth */; };
 		A92B2FEA56BAB39728969D26 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8593685F8C9DC9BD15BA6DD /* UserView.swift */; };
 		BFBAC545D2CDFC58A033EF11 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 7FA308D39CDC9D9E6089FA42 /* FirebaseFirestore */; };
+		CD6E84ED3C3D65FA4EB81644 /* MangaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C189978D235056913F5716A /* MangaDetailView.swift */; };
 		D1C3ADED6B6AEEA541B091B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6910C59155CFAA6FFE9C95D3 /* Assets.xcassets */; };
 		D77C18CA2EFBDCE93D945D94 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0790EFD66184D2024BD42BA8 /* Item.swift */; };
 		E01DC17BBF0A7516BAE287D3 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE82626E15A23659954FDED /* Date.swift */; };
@@ -49,6 +50,7 @@
 		5307D280FFFBC1BD2778E6EE /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		5EE82626E15A23659954FDED /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		6910C59155CFAA6FFE9C95D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6C189978D235056913F5716A /* MangaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDetailView.swift; sourceTree = "<group>"; };
 		7614A12EA718A8267214FF71 /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
 		8B0267C3CDE1D5EDEE8F8EC6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		95CA5224875CC59211D59008 /* yonnkomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = yonnkomiApp.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				2C92B73615ED874EBB3C7BCA /* CustomTabView.swift */,
 				4AB29FEA80B970B1D79540C9 /* HomeView.swift */,
 				8B0267C3CDE1D5EDEE8F8EC6 /* LoginView.swift */,
+				6C189978D235056913F5716A /* MangaDetailView.swift */,
 				D459D238F7626BC6678A3527 /* PostItemView.swift */,
 				3140B9D220B9E5FC6F0E2CE6 /* PostView.swift */,
 				000DC889166EBE73097E88DA /* PsetView.xib */,
@@ -244,6 +247,7 @@
 				7BAB81E8300040D4B1B00714 /* HomeView.swift in Sources */,
 				D77C18CA2EFBDCE93D945D94 /* Item.swift in Sources */,
 				EC33AED3CD3F181BE95BD6ED /* LoginView.swift in Sources */,
+				CD6E84ED3C3D65FA4EB81644 /* MangaDetailView.swift in Sources */,
 				2335B59C5157ED49335CEAA9 /* PKDrawingView.swift in Sources */,
 				0BCD33BB0ECAE58B78525064 /* Post.swift in Sources */,
 				82E0090A7CF8CF9213148D2B /* PostItemView.swift in Sources */,
