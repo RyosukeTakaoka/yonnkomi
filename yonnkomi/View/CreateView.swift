@@ -1,6 +1,6 @@
 import SwiftUI
 import PencilKit
-
+//漫画を描いて編集できる画面
 // MARK: - SwiftUI版 CanvasView
 struct CanvasView: UIViewRepresentable {
     @Binding var drawing: PKDrawing

@@ -1,7 +1,7 @@
 import SwiftUI
 import FirebaseAuth
 import LocalAuthentication
-
+//ログインするメールとパスワードを入力する画面
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
     

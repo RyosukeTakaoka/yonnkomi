@@ -1,6 +1,6 @@
 import SwiftUI
 import FirebaseAuth
-
+//ユーザー画面
 struct SavedItem {
     let id = UUID()
     let title: String

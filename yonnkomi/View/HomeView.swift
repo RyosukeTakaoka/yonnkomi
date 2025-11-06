@@ -1,6 +1,6 @@
 import SwiftUI
 import Firebase
-
+//ホーム画面、漫画のサムネが並んでいる画面
 struct HomeView: View {
     @State private var posts: [Post] = []
     @State private var isLoading: Bool = false

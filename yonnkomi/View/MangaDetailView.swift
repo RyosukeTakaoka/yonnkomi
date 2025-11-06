@@ -1,5 +1,5 @@
 import SwiftUI
-
+//漫画の中身を見る画面
 struct MangaDetailView: View {
     let post: Post
     @State private var currentPage: Int = 0

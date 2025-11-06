@@ -1,6 +1,9 @@
 import SwiftUI
 import UIKit
-
+import FirebaseAuth
+import FirebaseStorage
+import FirebaseFirestore
+//新規登録
 struct RegisterView: View {
     @Binding var isLoggedIn: Bool
     
@@ -150,46 +153,127 @@ struct RegisterView: View {
             showAlert = true
             return
         }
-        
+
         if !isValidEmail(inputEmail) {
             alertTitle = "エラー"
             alertMessage = "メールアドレスの形式が正しくありません"
             showAlert = true
             return
         }
-        
+
         if inputPassword.count < 6 {
             alertTitle = "エラー"
             alertMessage = "パスワードは6文字以上で入力してください"
             showAlert = true
             return
         }
-        
+
         isLoading = true
-        
-        // 登録処理 (例: Firebase Authなど。ここではダミー)
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
+
+        // FirebaseAuthでユーザー登録
+        Auth.auth().createUser(withEmail: inputEmail, password: inputPassword) { authResult, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.alertTitle = "エラー"
+                    self.alertMessage = error.localizedDescription
+                    self.showAlert = true
+                }
+                return
+            }
+
+            guard let user = authResult?.user else {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.alertTitle = "エラー"
+                    self.alertMessage = "ユーザー登録に失敗しました"
+                    self.showAlert = true
+                }
+                return
+            }
+
+            // プロフィール更新（表示名の設定）
+            let changeRequest = user.createProfileChangeRequest()
+            changeRequest.displayName = self.imputName
+            changeRequest.commitChanges { error in
+                if let error = error {
+                    print("Display name update error: \(error.localizedDescription)")
+                }
+            }
+
+            // 画像がある場合はアップロード
+            if let image = self.selectedImage {
+                self.uploadProfileImage(image: image, userId: user.uid) { imageUrl in
+                    self.saveUserProfile(userId: user.uid, name: self.imputName, email: self.inputEmail, profileImageUrl: imageUrl)
+                }
+            } else {
+                // 画像がない場合はそのまま保存
+                self.saveUserProfile(userId: user.uid, name: self.imputName, email: self.inputEmail, profileImageUrl: nil)
+            }
+        }
+    }
+
+    // 画像をFirebase Storageにアップロード
+    private func uploadProfileImage(image: UIImage, userId: String, completion: @escaping (String?) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.5) else {
+            completion(nil)
+            return
+        }
+
+        let storageRef = Storage.storage().reference()
+        let profileImageRef = storageRef.child("profile_images/\(userId).jpg")
+
+        profileImageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print("Image upload error: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+
+            // アップロード成功後、ダウンロードURLを取得
+            profileImageRef.downloadURL { url, error in
+                if let error = error {
+                    print("Download URL error: \(error.localizedDescription)")
+                    completion(nil)
+                    return
+                }
+                completion(url?.absoluteString)
+            }
+        }
+    }
+
+    // ユーザー情報をFirestoreに保存
+    private func saveUserProfile(userId: String, name: String, email: String, profileImageUrl: String?) {
+        let db = Firestore.firestore()
+        var userData: [String: Any] = [
+            "name": name,
+            "email": email,
+            "createdAt": Timestamp(date: Date())
+        ]
+
+        if let imageUrl = profileImageUrl {
+            userData["profileImageUrl"] = imageUrl
+        }
+
+        db.collection("users").document(userId).setData(userData) { error in
             DispatchQueue.main.async {
                 self.isLoading = false
-                
-                let success = true // ← 実際の処理の結果を使う
-                
-                if success {
+
+                if let error = error {
+                    self.alertTitle = "エラー"
+                    self.alertMessage = "ユーザー情報の保存に失敗しました: \(error.localizedDescription)"
+                    self.showAlert = true
+                } else {
                     // 成功時
-                    alertTitle = ""
+                    self.alertTitle = "成功"
                     self.alertMessage = "アカウントの登録が完了しました。"
                     self.showAlert = true
-                    isLoggedIn = true
-                    
+                    self.isLoggedIn = true
+
                     // アラート表示後に閉じる
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         self.presentationMode.wrappedValue.dismiss()
                     }
-                } else {
-                    // 失敗時
-                    alertTitle = "エラー"
-                    self.alertMessage = "登録に失敗しました。もう一度お試しください。"
-                    self.showAlert = true
                 }
             }
         }

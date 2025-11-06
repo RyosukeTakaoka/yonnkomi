@@ -1,6 +1,6 @@
 import SwiftUI
 import FirebaseAuth
-
+//タスクを切った時の状態を保存
 struct RootView: View {
     @State private var isLoggedIn = false
     @State private var isCheckingAuth = true
