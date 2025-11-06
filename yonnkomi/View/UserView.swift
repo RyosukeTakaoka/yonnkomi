@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 //ユーザー画面
 struct SavedItem {
     let id = UUID()
@@ -13,6 +14,10 @@ struct SavedItem {
 
 struct UserView: View {
     @Binding var isLoggedIn: Bool
+
+    @State private var userName: String = "読み込み中..."
+    @State private var userEmail: String = ""
+    @State private var profileImageUrl: String? = nil
 
     @State private var savedItems: [SavedItem] = [
         SavedItem(title: "地縛少年花子くん", episode: "第1話", savedDate: Date().addingTimeInterval(-86400), thumbnailName: "hanako1", isRead: false, progress: 0.3),
@@ -75,26 +80,65 @@ struct UserView: View {
                 Text(logoutErrorMessage)
             }
         }
+        .onAppear {
+            fetchUserProfile()
+        }
     }
     
     private var headerSection: some View {
         VStack(spacing: 12) {
             HStack {
                 // Profile icon
-                Image(systemName: "person.circle.fill")
-                    .font(.system(size: 50))
-                    .foregroundColor(.orange)
-                
+                if let imageUrl = profileImageUrl, let url = URL(string: imageUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 50, height: 50)
+                                .onAppear {
+                                    print("🔄 Loading image from: \(url)")
+                                }
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                                .onAppear {
+                                    print("✅ Image loaded successfully")
+                                }
+                        case .failure(let error):
+                            Image(systemName: "person.circle.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.orange)
+                                .onAppear {
+                                    print("❌ Image load failed: \(error)")
+                                }
+                        @unknown default:
+                            Image(systemName: "person.circle.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.orange)
+                        }
+                    }
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .font(.system(size: 50))
+                        .foregroundColor(.orange)
+                        .onAppear {
+                            print("ℹ️ No profile image URL available, showing default icon")
+                        }
+                }
+
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("たかおか")
+                    Text(userName)
                         .font(.headline)
                         .fontWeight(.bold)
-                    
-                    Text("231321@gagdafdfa")
+
+                    Text(userEmail)
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
 
                 // Logout button
@@ -243,6 +287,49 @@ struct UserView: View {
                 isRead: !item.isRead,
                 progress: item.progress
             )
+        }
+    }
+
+    private func fetchUserProfile() {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("⚠️ No current user")
+            return
+        }
+
+        print("📥 Fetching user profile for: \(currentUser.uid)")
+
+        let db = Firestore.firestore()
+        db.collection("users").document(currentUser.uid).getDocument { document, error in
+            if let error = error {
+                print("❌ Error fetching user profile: \(error.localizedDescription)")
+                return
+            }
+
+            if let document = document, document.exists {
+                let data = document.data()
+                print("✅ User document found")
+                print("📄 Document data: \(String(describing: data))")
+
+                DispatchQueue.main.async {
+                    self.userName = data?["name"] as? String ?? "ユーザー"
+                    self.userEmail = data?["email"] as? String ?? currentUser.email ?? ""
+
+                    if let imageUrl = data?["profileImageUrl"] as? String {
+                        print("🖼️ Profile image URL found: \(imageUrl)")
+                        self.profileImageUrl = imageUrl
+                    } else {
+                        print("⚠️ No profile image URL in document")
+                        self.profileImageUrl = nil
+                    }
+                }
+            } else {
+                print("⚠️ User document does not exist")
+                // Firestoreにデータがない場合はAuthから取得
+                DispatchQueue.main.async {
+                    self.userName = currentUser.displayName ?? "ユーザー"
+                    self.userEmail = currentUser.email ?? ""
+                }
+            }
         }
     }
 

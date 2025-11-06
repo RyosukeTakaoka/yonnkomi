@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -45,7 +45,7 @@
 		2C92B73615ED874EBB3C7BCA /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		3140B9D220B9E5FC6F0E2CE6 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		3B04616DBF88533821F66C31 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		4A3E6D2D642483364A23F963 /* yonnkomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = yonnkomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A3E6D2D642483364A23F963 /* yonnkomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yonnkomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AB29FEA80B970B1D79540C9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4BFA51694FD9A9D8FD035F32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5307D280FFFBC1BD2778E6EE /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -197,7 +197,6 @@
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					95D42850D6CF78A4A605A7B6 = {
-						DevelopmentTeam = 5B2NQ74986;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -217,7 +216,6 @@
 				BFC85B2364F7F669F01C08F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				32EBB3780786FCE5A0F0E57A /* XCRemoteSwiftPackageReference "PKHUD" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -340,7 +338,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"yonnkomi/Preview Content\"";
-				DEVELOPMENT_TEAM = 5B2NQ74986;
+				DEVELOPMENT_TEAM = 3P2VBG45Y8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = yonnkomi/Info.plist;
@@ -354,7 +352,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi;
+				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi2025;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -370,7 +368,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"yonnkomi/Preview Content\"";
-				DEVELOPMENT_TEAM = 5B2NQ74986;
+				DEVELOPMENT_TEAM = 3P2VBG45Y8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = yonnkomi/Info.plist;
@@ -384,7 +382,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi;
+				PRODUCT_BUNDLE_IDENTIFIER = app.takaoka.harusuke.yonnkomi2025;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -215,29 +215,47 @@ struct RegisterView: View {
 
     // 画像をFirebase Storageにアップロード
     private func uploadProfileImage(image: UIImage, userId: String, completion: @escaping (String?) -> Void) {
-        guard let imageData = image.jpegData(compressionQuality: 0.5) else {
+        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
+            print("❌ Failed to convert image to JPEG data")
             completion(nil)
             return
         }
 
+        print("📤 Starting image upload for user: \(userId)")
+        print("📦 Image data size: \(imageData.count) bytes")
+
         let storageRef = Storage.storage().reference()
         let profileImageRef = storageRef.child("profile_images/\(userId).jpg")
 
-        profileImageRef.putData(imageData, metadata: nil) { metadata, error in
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+
+        profileImageRef.putData(imageData, metadata: metadata) { metadata, error in
             if let error = error {
-                print("Image upload error: \(error.localizedDescription)")
+                print("❌ Image upload error: \(error.localizedDescription)")
+                print("❌ Error details: \(error)")
                 completion(nil)
                 return
             }
 
+            print("✅ Image uploaded successfully")
+
             // アップロード成功後、ダウンロードURLを取得
             profileImageRef.downloadURL { url, error in
                 if let error = error {
-                    print("Download URL error: \(error.localizedDescription)")
+                    print("❌ Download URL error: \(error.localizedDescription)")
+                    print("❌ Error details: \(error)")
                     completion(nil)
                     return
                 }
-                completion(url?.absoluteString)
+
+                if let urlString = url?.absoluteString {
+                    print("✅ Download URL obtained: \(urlString)")
+                    completion(urlString)
+                } else {
+                    print("❌ URL is nil")
+                    completion(nil)
+                }
             }
         }
     }
@@ -252,18 +270,26 @@ struct RegisterView: View {
         ]
 
         if let imageUrl = profileImageUrl {
+            print("💾 Saving profile with image URL: \(imageUrl)")
             userData["profileImageUrl"] = imageUrl
+        } else {
+            print("⚠️ No profile image URL to save")
         }
+
+        print("💾 Saving user profile to Firestore for user: \(userId)")
+        print("💾 User data: \(userData)")
 
         db.collection("users").document(userId).setData(userData) { error in
             DispatchQueue.main.async {
                 self.isLoading = false
 
                 if let error = error {
+                    print("❌ Firestore save error: \(error.localizedDescription)")
                     self.alertTitle = "エラー"
                     self.alertMessage = "ユーザー情報の保存に失敗しました: \(error.localizedDescription)"
                     self.showAlert = true
                 } else {
+                    print("✅ User profile saved successfully to Firestore")
                     // 成功時
                     self.alertTitle = "成功"
                     self.alertMessage = "アカウントの登録が完了しました。"
