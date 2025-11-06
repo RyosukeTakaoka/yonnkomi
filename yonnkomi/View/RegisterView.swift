@@ -1,26 +1,34 @@
 import SwiftUI
 import UIKit
 import FirebaseAuth
-import FirebaseStorage
 import FirebaseFirestore
+import Cloudinary
 //新規登録
 struct RegisterView: View {
     @Binding var isLoggedIn: Bool
-    
+
     @State var imputName: String = ""
     @State var inputEmail: String = ""
     @State var inputPassword: String = ""
     @State private var selectedImage: UIImage? = nil
     @State private var showImagePicker: Bool = false
     @State private var isPresented: Bool = false
-    
+
     @State private var showAlert: Bool = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var isLoading: Bool = false
-    
+
     // 画面遷移用のEnvironment変数
     @Environment(\.presentationMode) var presentationMode
+
+    // Cloudinary設定
+    // 1. https://cloudinary.com/ でアカウントを作成
+    // 2. Dashboard > Account Details から "Cloud Name" を取得
+    // 3. Settings > Upload > Upload presets で "unsigned" プリセットを作成
+    // 4. 作成したプリセット名を下記に設定
+    private let cloudinaryCloudName = "YOUR_CLOUD_NAME" // ← CloudinaryのCloud Nameを設定
+    private let cloudinaryUploadPreset = "YOUR_UPLOAD_PRESET" // ← Upload Preset名を設定（unsigned推奨）
     
     var body: some View {
         NavigationView {
@@ -213,7 +221,7 @@ struct RegisterView: View {
         }
     }
 
-    // 画像をFirebase Storageにアップロード
+    // 画像をCloudinaryにアップロード
     private func uploadProfileImage(image: UIImage, userId: String, completion: @escaping (String?) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.7) else {
             print("❌ Failed to convert image to JPEG data")
@@ -221,43 +229,46 @@ struct RegisterView: View {
             return
         }
 
-        print("📤 Starting image upload for user: \(userId)")
+        print("📤 Starting Cloudinary image upload for user: \(userId)")
         print("📦 Image data size: \(imageData.count) bytes")
 
-        let storageRef = Storage.storage().reference()
-        let profileImageRef = storageRef.child("profile_images/\(userId).jpg")
+        // Cloudinary設定
+        let config = CLDConfiguration(cloudName: cloudinaryCloudName, secure: true)
+        let cloudinary = CLDCloudinary(configuration: config)
 
-        let metadata = StorageMetadata()
-        metadata.contentType = "image/jpeg"
+        // アップロードパラメータ
+        let params = CLDUploadRequestParams()
+        params.setPublicId("profile_images/\(userId)") // ユーザーIDをファイル名として使用
+        params.setFolder("profile_images") // フォルダを指定
 
-        profileImageRef.putData(imageData, metadata: metadata) { metadata, error in
-            if let error = error {
-                print("❌ Image upload error: \(error.localizedDescription)")
-                print("❌ Error details: \(error)")
-                completion(nil)
-                return
-            }
+        print("☁️ Uploading to Cloudinary...")
 
-            print("✅ Image uploaded successfully")
-
-            // アップロード成功後、ダウンロードURLを取得
-            profileImageRef.downloadURL { url, error in
+        // Cloudinaryにアップロード
+        cloudinary.createUploader().upload(
+            data: imageData,
+            uploadPreset: cloudinaryUploadPreset,
+            params: params,
+            progress: { progress in
+                print("📊 Upload progress: \(progress.fractionCompleted * 100)%")
+            },
+            completionHandler: { result, error in
                 if let error = error {
-                    print("❌ Download URL error: \(error.localizedDescription)")
+                    print("❌ Cloudinary upload error: \(error.localizedDescription)")
                     print("❌ Error details: \(error)")
                     completion(nil)
                     return
                 }
 
-                if let urlString = url?.absoluteString {
-                    print("✅ Download URL obtained: \(urlString)")
-                    completion(urlString)
+                if let result = result, let secureUrl = result.secureUrl {
+                    print("✅ Image uploaded successfully to Cloudinary")
+                    print("✅ Image URL: \(secureUrl)")
+                    completion(secureUrl)
                 } else {
-                    print("❌ URL is nil")
+                    print("❌ Failed to get secure URL from Cloudinary result")
                     completion(nil)
                 }
             }
-        }
+        )
     }
 
     // ユーザー情報をFirestoreに保存
