@@ -58,6 +58,8 @@ targets:
         product: FirebaseDatabase
       - package: FirebaseSDK
         product: FirebaseFirestore
+      - package: FirebaseSDK
+        product: FirebaseStorage
       - package: Cloudinary
         product: Cloudinary
       - package: PKHUD
