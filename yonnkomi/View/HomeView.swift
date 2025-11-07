@@ -62,13 +62,14 @@ struct HomeView: View {
                 let id = data["id"] as? String ?? "defaultId"
                 let title = data["title"] as? String ?? "No Title"
                 let userId = data["userId"] as? String ?? "defaultUserId"
+                let userProfileImageUrl = data["userProfileImageUrl"] as? String
                 let postImages = data["postImages"] as? [String] ?? []
                 let thumbnailPost = data["thumbnailPost"] as? String ?? "No Thumbnail"
                 let createdAt = data["createdAt"] as? String ?? "No Date"
 
                 // いいね状態を反映
                 let isLiked = likedPostIds.contains(id)
-                return Post(id: id, title: title, userId: userId, postImages: postImages, thumbnailPost: thumbnailPost, createdAt: createdAt, isLiked: isLiked)
+                return Post(id: id, title: title, userId: userId, userProfileImageUrl: userProfileImageUrl, postImages: postImages, thumbnailPost: thumbnailPost, createdAt: createdAt, isLiked: isLiked)
             } ?? []
 
             let dateFormatter = DateFormatter()
@@ -118,7 +119,7 @@ struct HomeView: View {
             if posts[index].isLiked {
                 // いいねを追加
                 likedPostIds.insert(post.id)
-                let likeData: [String: Any] = [
+                var likeData: [String: Any] = [
                     "postId": post.id,
                     "title": post.title,
                     "thumbnailPost": post.thumbnailPost,
@@ -127,6 +128,12 @@ struct HomeView: View {
                     "createdAt": post.createdAt,
                     "likedAt": Timestamp(date: Date())
                 ]
+
+                // 投稿者のプロフィール画像URLがあれば追加
+                if let profileUrl = post.userProfileImageUrl {
+                    likeData["userProfileImageUrl"] = profileUrl
+                }
+
                 likeRef.setData(likeData) { error in
                     if let error = error {
                         print("❌ Error saving like: \(error.localizedDescription)")
@@ -146,5 +153,10 @@ struct HomeView: View {
                 }
             }
         }
+    }
+}
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        UserView(isLoggedIn: .constant(true))
     }
 }

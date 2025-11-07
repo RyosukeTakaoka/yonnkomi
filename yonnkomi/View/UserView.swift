@@ -12,6 +12,7 @@ struct SavedItem {
     let isRead: Bool
     let progress: Double // 0.0 to 1.0
     let userId: String // 投稿者ID
+    let userProfileImageUrl: String? // 投稿者のプロフィール画像URL
     let postImages: [String] // 4コマ漫画の画像URL配列
     let createdAt: String // 投稿日時
 }
@@ -295,6 +296,7 @@ struct UserView: View {
                 isRead: !item.isRead,
                 progress: item.progress,
                 userId: item.userId,
+                userProfileImageUrl: item.userProfileImageUrl,
                 postImages: item.postImages,
                 createdAt: item.createdAt
             )
@@ -367,6 +369,7 @@ struct UserView: View {
                     let title = data["title"] as? String ?? "タイトルなし"
                     let thumbnailPost = data["thumbnailPost"] as? String ?? ""
                     let userId = data["userId"] as? String ?? ""
+                    let userProfileImageUrl = data["userProfileImageUrl"] as? String
                     let postImages = data["postImages"] as? [String] ?? []
                     let createdAt = data["createdAt"] as? String ?? ""
                     let likedAt = (data["likedAt"] as? Timestamp)?.dateValue() ?? Date()
@@ -382,6 +385,7 @@ struct UserView: View {
                         isRead: false,
                         progress: 0.0,
                         userId: userId,
+                        userProfileImageUrl: userProfileImageUrl,
                         postImages: postImages,
                         createdAt: createdAt
                     )
@@ -399,6 +403,7 @@ struct UserView: View {
             id: item.postId,
             title: item.title,
             userId: item.userId,
+            userProfileImageUrl: item.userProfileImageUrl,
             postImages: item.postImages,
             thumbnailPost: item.thumbnailName,
             createdAt: item.createdAt,

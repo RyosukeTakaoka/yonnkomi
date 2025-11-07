@@ -22,21 +22,56 @@ struct PostItemView: View {
                         .frame(width: imageSize, height: imageSize)
                 }
 
-                AsyncImage(url: URL(string: post.thumbnailPost)) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
+                // 投稿者のプロフィール画像を表示
+                if let profileImageUrl = post.userProfileImageUrl, !profileImageUrl.isEmpty {
+                    AsyncImage(url: URL(string: profileImageUrl)) { phase in
+                        switch phase {
+                        case .empty:
+                            Circle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(width: imageSize * 0.2, height: imageSize * 0.2)
+                                .overlay(
+                                    ProgressView()
+                                        .scaleEffect(0.5)
+                                )
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: imageSize * 0.2, height: imageSize * 0.2)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                                .shadow(radius: 2)
+                        case .failure(_):
+                            Circle()
+                                .fill(Color.orange)
+                                .frame(width: imageSize * 0.2, height: imageSize * 0.2)
+                                .overlay(
+                                    Image(systemName: "person.fill")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: imageSize * 0.08))
+                                )
+                                .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                                .shadow(radius: 2)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .offset(x: -spacer, y: -spacer)
+                } else {
+                    // プロフィール画像がない場合はデフォルトアイコン
+                    Circle()
+                        .fill(Color.orange)
                         .frame(width: imageSize * 0.2, height: imageSize * 0.2)
-                        .clipShape(Circle())
+                        .overlay(
+                            Image(systemName: "person.fill")
+                                .foregroundColor(.white)
+                                .font(.system(size: imageSize * 0.08))
+                        )
                         .overlay(Circle().stroke(Color.white, lineWidth: 2))
                         .shadow(radius: 2)
-                } placeholder: {
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: imageSize * 0.3, height: imageSize * 0.3)
-                        .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                        .offset(x: -spacer, y: -spacer)
                 }
-                .offset(x: -spacer, y: -spacer)
             }
 
             HStack {

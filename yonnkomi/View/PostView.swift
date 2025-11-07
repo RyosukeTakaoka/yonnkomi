@@ -244,8 +244,20 @@ struct PostView: View {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let createdAt = formatter.string(from: Date())
         let currentUserID = Auth.auth().currentUser?.uid ?? ""
-        
-        let postData: [String: Any] = [
+
+        // 投稿者のプロフィール画像URLを取得
+        var userProfileImageUrl: String? = nil
+        do {
+            let userDoc = try await db.collection("users").document(currentUserID).getDocument()
+            if let userData = userDoc.data() {
+                userProfileImageUrl = userData["profileImageUrl"] as? String
+                print("✅ User profile image URL retrieved: \(userProfileImageUrl ?? "nil")")
+            }
+        } catch {
+            print("⚠️ Failed to fetch user profile image: \(error.localizedDescription)")
+        }
+
+        var postData: [String: Any] = [
             "id": uuid,
             "title": title,
             "userId": currentUserID,
@@ -253,7 +265,12 @@ struct PostView: View {
             "thumbnailPost": thumbnailURL,
             "createdAt": createdAt
         ]
-        
+
+        // プロフィール画像URLがあれば追加
+        if let profileUrl = userProfileImageUrl {
+            postData["userProfileImageUrl"] = profileUrl
+        }
+
         do {
             try await db.collection("posts").document(uuid).setData(postData)
             alertMessage = "投稿できました！"
