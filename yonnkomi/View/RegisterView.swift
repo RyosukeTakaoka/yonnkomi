@@ -22,13 +22,8 @@ struct RegisterView: View {
     // 画面遷移用のEnvironment変数
     @Environment(\.presentationMode) var presentationMode
 
-    // Cloudinary設定
-    // 1. https://cloudinary.com/ でアカウントを作成
-    // 2. Dashboard > Account Details から "Cloud Name" を取得
-    // 3. Settings > Upload > Upload presets で "unsigned" プリセットを作成
-    // 4. 作成したプリセット名を下記に設定
-    private let cloudinaryCloudName = "YOUR_CLOUD_NAME" // ← CloudinaryのCloud Nameを設定
-    private let cloudinaryUploadPreset = "YOUR_UPLOAD_PRESET" // ← Upload Preset名を設定（unsigned推奨）
+    // Cloudinary設定（PostViewと同じ設定を使用）
+    let cloudinary = CLDCloudinary(configuration: CLDConfiguration(cloudName: "dw71feikq", secure: true))
     
     var body: some View {
         NavigationView {
@@ -179,100 +174,78 @@ struct RegisterView: View {
         isLoading = true
 
         // FirebaseAuthでユーザー登録
-        Auth.auth().createUser(withEmail: inputEmail, password: inputPassword) { authResult, error in
-            if let error = error {
+        Task {
+            do {
+                let authResult = try await Auth.auth().createUser(withEmail: inputEmail, password: inputPassword)
+                let user = authResult.user
+
+                // プロフィール更新（表示名の設定）
+                let changeRequest = user.createProfileChangeRequest()
+                changeRequest.displayName = self.imputName
+                try? await changeRequest.commitChanges()
+
+                // 画像がある場合はアップロード
+                var imageUrl: String? = nil
+                if let image = self.selectedImage {
+                    let uploadedUrl = await self.uploadProfileImage(image: image, userId: user.uid)
+                    if !uploadedUrl.isEmpty {
+                        imageUrl = uploadedUrl
+                    }
+                }
+
+                // Firestoreに保存
+                await self.saveUserProfile(userId: user.uid, name: self.imputName, email: self.inputEmail, profileImageUrl: imageUrl)
+
+            } catch {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.alertTitle = "エラー"
                     self.alertMessage = error.localizedDescription
                     self.showAlert = true
                 }
-                return
-            }
-
-            guard let user = authResult?.user else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.alertTitle = "エラー"
-                    self.alertMessage = "ユーザー登録に失敗しました"
-                    self.showAlert = true
-                }
-                return
-            }
-
-            // プロフィール更新（表示名の設定）
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = self.imputName
-            changeRequest.commitChanges { error in
-                if let error = error {
-                    print("Display name update error: \(error.localizedDescription)")
-                }
-            }
-
-            // 画像がある場合はアップロード
-            if let image = self.selectedImage {
-                self.uploadProfileImage(image: image, userId: user.uid) { imageUrl in
-                    self.saveUserProfile(userId: user.uid, name: self.imputName, email: self.inputEmail, profileImageUrl: imageUrl)
-                }
-            } else {
-                // 画像がない場合はそのまま保存
-                self.saveUserProfile(userId: user.uid, name: self.imputName, email: self.inputEmail, profileImageUrl: nil)
             }
         }
     }
 
-    // 画像をCloudinaryにアップロード
-    private func uploadProfileImage(image: UIImage, userId: String, completion: @escaping (String?) -> Void) {
-        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
+    // 画像をCloudinaryにアップロード（PostViewと同じ方式）
+    private func uploadProfileImage(image: UIImage, userId: String) async -> String {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             print("❌ Failed to convert image to JPEG data")
-            completion(nil)
-            return
+            return ""
         }
 
         print("📤 Starting Cloudinary image upload for user: \(userId)")
         print("📦 Image data size: \(imageData.count) bytes")
 
-        // Cloudinary設定
-        let config = CLDConfiguration(cloudName: cloudinaryCloudName, secure: true)
-        let cloudinary = CLDCloudinary(configuration: config)
+        let uploader = cloudinary.createUploader()
 
-        // アップロードパラメータ
-        let params = CLDUploadRequestParams()
-        params.setPublicId("profile_images/\(userId)") // ユーザーIDをファイル名として使用
-        params.setFolder("profile_images") // フォルダを指定
+        return await withCheckedContinuation { continuation in
+            let uniqueId = "profile_images/\(userId)"
+            let params = CLDUploadRequestParams().setPublicId(uniqueId)
 
-        print("☁️ Uploading to Cloudinary...")
+            print("☁️ Uploading to Cloudinary...")
 
-        // Cloudinaryにアップロード
-        cloudinary.createUploader().upload(
-            data: imageData,
-            uploadPreset: cloudinaryUploadPreset,
-            params: params,
-            progress: { progress in
-                print("📊 Upload progress: \(progress.fractionCompleted * 100)%")
-            },
-            completionHandler: { result, error in
+            uploader.upload(data: imageData, uploadPreset: "manga_thumbnail", params: params, progress: nil) { result, error in
                 if let error = error {
                     print("❌ Cloudinary upload error: \(error.localizedDescription)")
-                    print("❌ Error details: \(error)")
-                    completion(nil)
+                    continuation.resume(returning: "")
                     return
                 }
 
-                if let result = result, let secureUrl = result.secureUrl {
+                if let secureUrl = result?.secureUrl {
                     print("✅ Image uploaded successfully to Cloudinary")
                     print("✅ Image URL: \(secureUrl)")
-                    completion(secureUrl)
+                    continuation.resume(returning: secureUrl)
                 } else {
                     print("❌ Failed to get secure URL from Cloudinary result")
-                    completion(nil)
+                    continuation.resume(returning: "")
                 }
             }
-        )
+        }
     }
 
     // ユーザー情報をFirestoreに保存
-    private func saveUserProfile(userId: String, name: String, email: String, profileImageUrl: String?) {
+    private func saveUserProfile(userId: String, name: String, email: String, profileImageUrl: String?) async {
         let db = Firestore.firestore()
         var userData: [String: Any] = [
             "name": name,
@@ -290,28 +263,29 @@ struct RegisterView: View {
         print("💾 Saving user profile to Firestore for user: \(userId)")
         print("💾 User data: \(userData)")
 
-        db.collection("users").document(userId).setData(userData) { error in
+        do {
+            try await db.collection("users").document(userId).setData(userData)
+            print("✅ User profile saved successfully to Firestore")
+
             DispatchQueue.main.async {
                 self.isLoading = false
+                self.alertTitle = "成功"
+                self.alertMessage = "アカウントの登録が完了しました。"
+                self.showAlert = true
+                self.isLoggedIn = true
 
-                if let error = error {
-                    print("❌ Firestore save error: \(error.localizedDescription)")
-                    self.alertTitle = "エラー"
-                    self.alertMessage = "ユーザー情報の保存に失敗しました: \(error.localizedDescription)"
-                    self.showAlert = true
-                } else {
-                    print("✅ User profile saved successfully to Firestore")
-                    // 成功時
-                    self.alertTitle = "成功"
-                    self.alertMessage = "アカウントの登録が完了しました。"
-                    self.showAlert = true
-                    self.isLoggedIn = true
-
-                    // アラート表示後に閉じる
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
+                // アラート表示後に閉じる
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.presentationMode.wrappedValue.dismiss()
                 }
+            }
+        } catch {
+            print("❌ Firestore save error: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.alertTitle = "エラー"
+                self.alertMessage = "ユーザー情報の保存に失敗しました: \(error.localizedDescription)"
+                self.showAlert = true
             }
         }
     }

@@ -19,13 +19,7 @@ struct UserView: View {
     @State private var userEmail: String = ""
     @State private var profileImageUrl: String? = nil
 
-    @State private var savedItems: [SavedItem] = [
-        SavedItem(title: "地縛少年花子くん", episode: "第1話", savedDate: Date().addingTimeInterval(-86400), thumbnailName: "hanako1", isRead: false, progress: 0.3),
-        SavedItem(title: "地縛少年花子くん", episode: "第2話", savedDate: Date().addingTimeInterval(-172800), thumbnailName: "hanako2", isRead: true, progress: 1.0),
-        SavedItem(title: "地縛少年花子くん", episode: "第3話", savedDate: Date().addingTimeInterval(-259200), thumbnailName: "hanako3", isRead: false, progress: 0.0),
-        SavedItem(title: "地縛少年花子くん", episode: "第4話", savedDate: Date().addingTimeInterval(-345600), thumbnailName: "hanako4", isRead: false, progress: 0.7),
-        SavedItem(title: "地縛少年花子くん", episode: "第5話", savedDate: Date().addingTimeInterval(-432000), thumbnailName: "hanako5", isRead: true, progress: 1.0)
-    ]
+    @State private var savedItems: [SavedItem] = []
 
     @State private var searchText = ""
     @State private var sortOption: SortOption = .dateDescending
@@ -82,6 +76,7 @@ struct UserView: View {
         }
         .onAppear {
             fetchUserProfile()
+            fetchLikedPosts()
         }
     }
     
@@ -333,6 +328,48 @@ struct UserView: View {
         }
     }
 
+    private func fetchLikedPosts() {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("⚠️ No current user")
+            return
+        }
+
+        print("📥 Fetching liked posts for user: \(currentUser.uid)")
+
+        let db = Firestore.firestore()
+        db.collection("users").document(currentUser.uid).collection("likes")
+            .order(by: "likedAt", descending: true)
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("❌ Error fetching liked posts: \(error.localizedDescription)")
+                    return
+                }
+
+                let items = querySnapshot?.documents.compactMap { document -> SavedItem? in
+                    let data = document.data()
+                    let title = data["title"] as? String ?? "タイトルなし"
+                    let thumbnailPost = data["thumbnailPost"] as? String ?? ""
+                    let likedAt = (data["likedAt"] as? Timestamp)?.dateValue() ?? Date()
+
+                    print("📚 Liked post: \(title)")
+
+                    return SavedItem(
+                        title: title,
+                        episode: "投稿",
+                        savedDate: likedAt,
+                        thumbnailName: thumbnailPost,
+                        isRead: false,
+                        progress: 0.0
+                    )
+                } ?? []
+
+                DispatchQueue.main.async {
+                    self.savedItems = items
+                    print("✅ Loaded \(items.count) liked posts")
+                }
+            }
+    }
+
     private func handleLogout() {
         do {
             try Auth.auth().signOut()
@@ -350,21 +387,33 @@ struct UserView: View {
 
 struct SavedItemRow: View {
     let item: SavedItem
-    
+
     var body: some View {
         HStack(spacing: 12) {
             // Thumbnail
-            AsyncImage(url: URL(string: "https://via.placeholder.com/60x80")) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color(.systemGray4))
-                    .overlay(
-                        Image(systemName: "book.closed")
-                            .foregroundColor(.secondary)
-                    )
+            AsyncImage(url: URL(string: item.thumbnailName)) { phase in
+                switch phase {
+                case .empty:
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.systemGray4))
+                        .overlay(
+                            ProgressView()
+                        )
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                case .failure(_):
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.systemGray4))
+                        .overlay(
+                            Image(systemName: "book.closed")
+                                .foregroundColor(.secondary)
+                        )
+                @unknown default:
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.systemGray4))
+                }
             }
             .frame(width: 60, height: 80)
             .clipped()

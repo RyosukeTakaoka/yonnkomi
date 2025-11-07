@@ -1,10 +1,12 @@
 import SwiftUI
 import Firebase
+import FirebaseAuth
 //ホーム画面、漫画のサムネが並んでいる画面
 struct HomeView: View {
     @State private var posts: [Post] = []
     @State private var isLoading: Bool = false
     @State private var selectedPost: Post?
+    @State private var likedPostIds: Set<String> = []
     let db = Firestore.firestore()
     let spacer: CGFloat = 8
 
@@ -22,12 +24,7 @@ struct HomeView: View {
                             post: post,
                             spacer: spacer,
                             onLikeTapped: {
-                                if let index = posts.firstIndex(where: { $0.id == post.id }) {
-                                    withAnimation(.spring()) {
-                                        posts[index].isLiked.toggle()
-                                    }
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                }
+                                toggleLike(for: post)
                             },
                             onTap: {
                                 selectedPost = post
@@ -39,9 +36,11 @@ struct HomeView: View {
             }
             .onAppear {
                 fetchPosts()
+                fetchLikedPosts()
             }
             .refreshable {
                 fetchPosts()
+                fetchLikedPosts()
             }
             .navigationDestination(item: $selectedPost) { post in
                 MangaDetailView(post: post)
@@ -67,7 +66,9 @@ struct HomeView: View {
                 let thumbnailPost = data["thumbnailPost"] as? String ?? "No Thumbnail"
                 let createdAt = data["createdAt"] as? String ?? "No Date"
 
-                return Post(id: id, title: title, userId: userId, postImages: postImages, thumbnailPost: thumbnailPost, createdAt: createdAt, isLiked: false)
+                // いいね状態を反映
+                let isLiked = likedPostIds.contains(id)
+                return Post(id: id, title: title, userId: userId, postImages: postImages, thumbnailPost: thumbnailPost, createdAt: createdAt, isLiked: isLiked)
             } ?? []
 
             let dateFormatter = DateFormatter()
@@ -78,6 +79,72 @@ struct HomeView: View {
                 return date1 > date2
             }
             isLoading = false
+        }
+    }
+
+    private func fetchLikedPosts() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        db.collection("users").document(userId).collection("likes").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("❌ Error fetching likes: \(error.localizedDescription)")
+                return
+            }
+
+            likedPostIds = Set(querySnapshot?.documents.compactMap { $0.documentID } ?? [])
+            print("✅ Loaded \(likedPostIds.count) liked posts")
+
+            // いいね状態を更新
+            for index in posts.indices {
+                posts[index].isLiked = likedPostIds.contains(posts[index].id)
+            }
+        }
+    }
+
+    private func toggleLike(for post: Post) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("⚠️ User not logged in")
+            return
+        }
+
+        if let index = posts.firstIndex(where: { $0.id == post.id }) {
+            withAnimation(.spring()) {
+                posts[index].isLiked.toggle()
+            }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+
+            let likeRef = db.collection("users").document(userId).collection("likes").document(post.id)
+
+            if posts[index].isLiked {
+                // いいねを追加
+                likedPostIds.insert(post.id)
+                let likeData: [String: Any] = [
+                    "postId": post.id,
+                    "title": post.title,
+                    "thumbnailPost": post.thumbnailPost,
+                    "userId": post.userId,
+                    "postImages": post.postImages,
+                    "createdAt": post.createdAt,
+                    "likedAt": Timestamp(date: Date())
+                ]
+                likeRef.setData(likeData) { error in
+                    if let error = error {
+                        print("❌ Error saving like: \(error.localizedDescription)")
+                    } else {
+                        print("✅ Like saved for post: \(post.title)")
+                    }
+                }
+            } else {
+                // いいねを削除
+                likedPostIds.remove(post.id)
+                likeRef.delete { error in
+                    if let error = error {
+                        print("❌ Error removing like: \(error.localizedDescription)")
+                    } else {
+                        print("✅ Like removed for post: \(post.title)")
+                    }
+                }
+            }
         }
     }
 }
