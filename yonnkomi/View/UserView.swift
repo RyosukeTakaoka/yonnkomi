@@ -4,12 +4,16 @@ import FirebaseFirestore
 //ユーザー画面
 struct SavedItem {
     let id = UUID()
+    let postId: String // FirestoreのpostId
     let title: String
     let episode: String
     let savedDate: Date
     let thumbnailName: String
     let isRead: Bool
     let progress: Double // 0.0 to 1.0
+    let userId: String // 投稿者ID
+    let postImages: [String] // 4コマ漫画の画像URL配列
+    let createdAt: String // 投稿日時
 }
 
 struct UserView: View {
@@ -20,6 +24,7 @@ struct UserView: View {
     @State private var profileImageUrl: String? = nil
 
     @State private var savedItems: [SavedItem] = []
+    @State private var selectedPost: Post? = nil
 
     @State private var searchText = ""
     @State private var sortOption: SortOption = .dateDescending
@@ -52,7 +57,7 @@ struct UserView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 // Header with profile info
                 headerSection
@@ -72,6 +77,9 @@ struct UserView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(logoutErrorMessage)
+            }
+            .navigationDestination(item: $selectedPost) { post in
+                MangaDetailView(post: post)
             }
         }
         .onAppear {
@@ -197,12 +205,16 @@ struct UserView: View {
         List {
             ForEach(filteredAndSortedItems, id: \.id) { item in
                 SavedItemRow(item: item)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedPost = convertToPost(from: item)
+                    }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button("削除", role: .destructive) {
                             deleteItem(item)
                         }
                         .tint(.red)
-                        
+
                         Button(item.isRead ? "未読にする" : "既読にする") {
                             toggleReadStatus(item)
                         }
@@ -275,12 +287,16 @@ struct UserView: View {
     private func toggleReadStatus(_ item: SavedItem) {
         if let index = savedItems.firstIndex(where: { $0.id == item.id }) {
             savedItems[index] = SavedItem(
+                postId: item.postId,
                 title: item.title,
                 episode: item.episode,
                 savedDate: item.savedDate,
                 thumbnailName: item.thumbnailName,
                 isRead: !item.isRead,
-                progress: item.progress
+                progress: item.progress,
+                userId: item.userId,
+                postImages: item.postImages,
+                createdAt: item.createdAt
             )
         }
     }
@@ -347,19 +363,27 @@ struct UserView: View {
 
                 let items = querySnapshot?.documents.compactMap { document -> SavedItem? in
                     let data = document.data()
+                    let postId = data["postId"] as? String ?? document.documentID
                     let title = data["title"] as? String ?? "タイトルなし"
                     let thumbnailPost = data["thumbnailPost"] as? String ?? ""
+                    let userId = data["userId"] as? String ?? ""
+                    let postImages = data["postImages"] as? [String] ?? []
+                    let createdAt = data["createdAt"] as? String ?? ""
                     let likedAt = (data["likedAt"] as? Timestamp)?.dateValue() ?? Date()
 
-                    print("📚 Liked post: \(title)")
+                    print("📚 Liked post: \(title), postImages count: \(postImages.count)")
 
                     return SavedItem(
+                        postId: postId,
                         title: title,
                         episode: "投稿",
                         savedDate: likedAt,
                         thumbnailName: thumbnailPost,
                         isRead: false,
-                        progress: 0.0
+                        progress: 0.0,
+                        userId: userId,
+                        postImages: postImages,
+                        createdAt: createdAt
                     )
                 } ?? []
 
@@ -368,6 +392,18 @@ struct UserView: View {
                     print("✅ Loaded \(items.count) liked posts")
                 }
             }
+    }
+
+    private func convertToPost(from item: SavedItem) -> Post {
+        return Post(
+            id: item.postId,
+            title: item.title,
+            userId: item.userId,
+            postImages: item.postImages,
+            thumbnailPost: item.thumbnailName,
+            createdAt: item.createdAt,
+            isLiked: true // いいねした作品なので常にtrue
+        )
     }
 
     private func handleLogout() {
